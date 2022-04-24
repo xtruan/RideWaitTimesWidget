@@ -13,12 +13,10 @@ const ROUTE_RIDES = "/waits";
 (:glance)
 class RideWaitTimesWidgetApp extends Application.AppBase {
 
-//  Magic Kingdom lat/long
-//	hidden var mLat = 28.417663;
-//	hidden var mLon = -81.581212;
-
 	hidden var mLat = 999;
 	hidden var mLon = 999;
+	
+	hidden var mRequestInProgress = false;
 
 	function setLat(lat) {
 		mLat = lat;
@@ -34,6 +32,16 @@ class RideWaitTimesWidgetApp extends Application.AppBase {
 	
 	function getLon() {
 		return mLon;
+	}
+	
+	function setRequestInProgress(requestInProgress) {
+		mRequestInProgress = requestInProgress;
+		//System.println("set request: " + mRequestInProgress.toString());
+	}
+	
+	function isRequestInProgress() {
+	    //System.println("is request: " + mRequestInProgress.toString());
+		return mRequestInProgress;
 	}
 
     function initialize() {
@@ -74,6 +82,12 @@ class RideWaitTimesWidgetApp extends Application.AppBase {
     }
     
     function makeRequestParks(limit, callback) {
+        
+        if (isRequestInProgress()) {
+        	//System.println("request in progress!");
+    		return;
+    	}
+    	
         var url = URL_BASE + ROUTE_PARKS;
         var params = { // set the parameters
           "lat" => getLat().toString(),
@@ -85,10 +99,17 @@ class RideWaitTimesWidgetApp extends Application.AppBase {
           :responseType => Communications.HTTP_RESPONSE_CONTENT_TYPE_JSON
         };
 
+		setRequestInProgress(true);
         Communications.makeWebRequest(url, params, options, callback);
     }
     
     function makeRequestRides(id, callback) {
+    	
+    	if (isRequestInProgress()) {
+    	    //System.println("request in progress!");
+    		return;
+    	}
+    	
         var url = URL_BASE + ROUTE_RIDES;
         var params = { // set the parameters
           "id" => id.toString()
@@ -98,6 +119,7 @@ class RideWaitTimesWidgetApp extends Application.AppBase {
           :responseType => Communications.HTTP_RESPONSE_CONTENT_TYPE_JSON
         };
 
+		setRequestInProgress(true);
         Communications.makeWebRequest(url, params, options, callback);
     }
 	

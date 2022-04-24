@@ -14,6 +14,9 @@ class RideWaitTimesRidesDelegate extends Ui.Menu2InputDelegate {
     // set up the response callback function
     function onReceiveRides(responseCode, data) {
     
+       App.getApp().setRequestInProgress(false);
+    
+       // check response code
        if (responseCode < 200 || responseCode >= 300) {
    	   	   App.getApp().showErrorView(responseCode);
    	   	   return;

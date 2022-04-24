@@ -30,6 +30,9 @@ class RideWaitTimesParksDelegate extends Ui.BehaviorDelegate {
    // Set up the response callback function
    function onReceiveParks(responseCode, data) {
    	   
+   	   App.getApp().setRequestInProgress(false);
+   	   
+   	   // check response code
    	   if (responseCode < 200 || responseCode >= 300) {
    	   	   App.getApp().showErrorView(responseCode);
    	   	   return;
