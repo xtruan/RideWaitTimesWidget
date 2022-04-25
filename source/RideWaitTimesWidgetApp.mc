@@ -19,6 +19,7 @@ class RideWaitTimesWidgetApp extends Application.AppBase {
 
 	hidden var mLat = 999;
 	hidden var mLon = 999;
+	hidden var mPosQuality = Position.QUALITY_LAST_KNOWN;
 	
 	hidden var mRequestInProgress = false;
 
@@ -36,6 +37,14 @@ class RideWaitTimesWidgetApp extends Application.AppBase {
 	
 	function getLon() {
 		return mLon;
+	}
+	
+	function setPosQuality(posQuality) {
+		mPosQuality = posQuality;
+	}
+	
+	function getPosQuality() {
+		return mPosQuality;
 	}
 	
 	function setRequestInProgress(requestInProgress) {
@@ -85,6 +94,7 @@ class RideWaitTimesWidgetApp extends Application.AppBase {
 		var degrees = info.position.toDegrees();
         setLat(degrees[0]);
 		setLon(degrees[1]);
+		setPosQuality(info.accuracy);
 		
 		var now = Time.now().value();
 		Application.Storage.setValue(REUSE_POS_STORAGE_KEY, [now, getLat(), getLon()]);

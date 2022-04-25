@@ -18,7 +18,7 @@ class RideWaitTimesParksDelegate extends Ui.BehaviorDelegate {
     }
     
     function onKey(key) {
-        if (key.getKey() == Ui.KEY_UP || key.getKey() == Ui.KEY_ENTER) {
+        if (key.getKey() == Ui.KEY_ENTER) {
             onMenu();
         }
     }

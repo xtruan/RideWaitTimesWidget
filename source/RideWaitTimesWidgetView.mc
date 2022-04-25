@@ -77,31 +77,21 @@ class RideWaitTimesWidgetView extends Ui.View {
         
         // Check if position is valid
         if (App.getApp().getLat() != 999 && App.getApp().getLon() != 999) {
+        	
         	if (progressTimer != null) {
                 progressTimer.stop();
             }
         
-            mStringTop = "Press start to";
+            if (deviceSettings != null && deviceSettings.isTouchScreen) {
+                mStringTop = "Tap screen to";
+            } else {
+                mStringTop = "Press start to";
+            }
             mStringBot = "load wait times";
-//            if (posInfo.accuracy == Pos.QUALITY_GOOD) {
-//                dc.setColor( Gfx.COLOR_GREEN, Gfx.COLOR_TRANSPARENT );
-//            } else if (posInfo.accuracy == Pos.QUALITY_USABLE) {
-//                dc.setColor( Gfx.COLOR_YELLOW, Gfx.COLOR_TRANSPARENT );
-//            } else if (posInfo.accuracy == Pos.QUALITY_POOR) {
-//                dc.setColor( Gfx.COLOR_RED, Gfx.COLOR_TRANSPARENT );
-//            } else {
-                dc.setColor( Gfx.COLOR_WHITE, Gfx.COLOR_TRANSPARENT );
-//            }            
 
-//            var degrees = posInfo.position.toDegrees();
-//            var lat = degrees[0];
-//            var long = degrees[1];
+            dc.setColor( Gfx.COLOR_WHITE, Gfx.COLOR_TRANSPARENT );
             
-              // if decimal degrees, we're done
-//            navStringTop = lat.format("%.6f");
-//            navStringBot = long.format("%.6f");
-            
-            // display navigation (position) string
+            // display navigation (position) info
             if (mStringBot.length() != 0) {
                 pos = pos + Gfx.getFontHeight(Gfx.FONT_SMALL);
                 dc.drawText( (dc.getWidth() / 2), pos, Gfx.FONT_MEDIUM, mStringTop, Gfx.TEXT_JUSTIFY_CENTER );
@@ -116,15 +106,27 @@ class RideWaitTimesWidgetView extends Ui.View {
             
             pos = pos + Gfx.getFontHeight(Gfx.FONT_MEDIUM) + 15;
             var image = Ui.loadResource(Rez.Drawables.Castle);
-			dc.drawBitmap((dc.getWidth() / 2) - 30, pos, image);
-            
-            // draw border around position
-            //dc.setColor( Gfx.COLOR_LT_GRAY, Gfx.COLOR_TRANSPARENT );
-            //dc.drawLine(0, (dc.getHeight() / 2) - 62, dc.getWidth(), (dc.getHeight() / 2) - 62);
-            //dc.drawLine(0, (dc.getHeight() / 2) - 18, dc.getWidth(), (dc.getHeight() / 2) - 18);
-            
+			dc.drawBitmap( (dc.getWidth() / 2) - 30, pos, image );
+			
+			// show position quality as dot
+			//pos = pos + 70;
+			pos = 10;
+			var posQuality = App.getApp().getPosQuality();
+			if (posQuality == Pos.QUALITY_GOOD) {
+                dc.setColor( Gfx.COLOR_GREEN, Gfx.COLOR_TRANSPARENT );
+            } else if (posQuality == Pos.QUALITY_USABLE) {
+                dc.setColor( Gfx.COLOR_YELLOW, Gfx.COLOR_TRANSPARENT );
+            } else if (posQuality == Pos.QUALITY_POOR) {
+                dc.setColor( Gfx.COLOR_RED, Gfx.COLOR_TRANSPARENT );
+            } else if (posQuality == Pos.QUALITY_LAST_KNOWN) {
+            	dc.setColor( Gfx.COLOR_BLUE, Gfx.COLOR_TRANSPARENT );
+            } else {
+            	dc.setColor( Gfx.COLOR_WHITE, Gfx.COLOR_TRANSPARENT );
+            }
+			dc.fillCircle( (dc.getWidth() / 2), pos, 5);
             
           } else {
+          
               mStringTop = "Waiting for GPS" + progressDots;
               mStringBot = "Just a sec!  : )";
             
@@ -133,22 +135,9 @@ class RideWaitTimesWidgetView extends Ui.View {
               dc.drawText( (dc.getWidth() / 2), (dc.getHeight() / 2) - Gfx.getFontHeight(Gfx.FONT_SMALL), Gfx.FONT_SMALL, mStringTop, Gfx.TEXT_JUSTIFY_CENTER );
               dc.setColor( msgColor, Gfx.COLOR_TRANSPARENT );
               dc.drawText( (dc.getWidth() / 2), (dc.getHeight() / 2), Gfx.FONT_SMALL, mStringBot, Gfx.TEXT_JUSTIFY_CENTER );
+        
         }
         
     }
-
-//    // position change callback
-//    function onPosition(info) {
-//        posInfo = info;
-//        
-//        var degrees = posInfo.position.toDegrees();
-//        App.getApp().setLat(degrees[0]);
-//        App.getApp().setLon(degrees[1]);
-//        
-//        mStringTop = "Press menu to";
-//        mStringBot = "load wait times";
-//
-//        Ui.requestUpdate();
-//    }
    
 }
