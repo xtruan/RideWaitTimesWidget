@@ -4,6 +4,7 @@ using Toybox.Graphics as Gfx;
 using Toybox.System as Sys;
 using Toybox.Lang as Lang;
 using Toybox.Position as Pos;
+using Toybox.Timer;
 
 class RideWaitTimesWidgetView extends Ui.View {
 
@@ -12,6 +13,9 @@ class RideWaitTimesWidgetView extends Ui.View {
     
     hidden var mStringTop = "";
     hidden var mStringBot = "";
+    hidden var progressTimer = null;
+    hidden var progressDots = ".";
+    hidden var msgColor = Gfx.COLOR_BLUE;
     
     function initialize() {
         View.initialize();
@@ -19,7 +23,24 @@ class RideWaitTimesWidgetView extends Ui.View {
 
     //! Load your resources here
     function onLayout(dc as Dc) {
+        progressTimer = new Timer.Timer();
+        progressTimer.start(method(:updateProgress), 1000, true);
     }
+    
+    function updateProgress() {
+	    progressDots = progressDots + ".";
+	    if (progressDots.length() > 3) {
+	        progressDots = ".";
+	    }
+	    if (progressDots.length() == 1) {
+	        msgColor = Gfx.COLOR_BLUE;
+	    } else if (progressDots.length() == 2) {
+	    	msgColor = Gfx.COLOR_PINK;
+	    } else {
+	        msgColor = Gfx.COLOR_YELLOW;
+	    }
+	    Ui.requestUpdate();
+	}
 
     function onHide() {
         //Pos.enableLocationEvents(Position.LOCATION_DISABLE, method(:onPosition));
@@ -56,6 +77,10 @@ class RideWaitTimesWidgetView extends Ui.View {
         
         // Check if position is valid
         if (App.getApp().getLat() != 999 && App.getApp().getLon() != 999) {
+        	if (progressTimer != null) {
+                progressTimer.stop();
+            }
+        
             mStringTop = "Press start to";
             mStringBot = "load wait times";
 //            if (posInfo.accuracy == Pos.QUALITY_GOOD) {
@@ -100,13 +125,13 @@ class RideWaitTimesWidgetView extends Ui.View {
             
             
           } else {
-              mStringTop = "Waiting for GPS...";
+              mStringTop = "Waiting for GPS" + progressDots;
               mStringBot = "Just a sec!  : )";
             
               // display default text for no GPS
               dc.setColor( Gfx.COLOR_WHITE, Gfx.COLOR_TRANSPARENT );
               dc.drawText( (dc.getWidth() / 2), (dc.getHeight() / 2) - Gfx.getFontHeight(Gfx.FONT_SMALL), Gfx.FONT_SMALL, mStringTop, Gfx.TEXT_JUSTIFY_CENTER );
-              dc.setColor( Gfx.COLOR_PINK, Gfx.COLOR_TRANSPARENT );
+              dc.setColor( msgColor, Gfx.COLOR_TRANSPARENT );
               dc.drawText( (dc.getWidth() / 2), (dc.getHeight() / 2), Gfx.FONT_SMALL, mStringBot, Gfx.TEXT_JUSTIFY_CENTER );
         }
         

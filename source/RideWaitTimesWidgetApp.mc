@@ -1,7 +1,8 @@
-import Toybox.Application;
-import Toybox.Lang;
-import Toybox.WatchUi;
-import Toybox.Position;
+using Toybox.Application;
+using Toybox.Lang;
+using Toybox.WatchUi;
+using Toybox.Position;
+using Toybox.Time;
 
 // dev/prod URLs
 //const URL_BASE = "https://qlvln5qtf4.execute-api.us-east-2.amazonaws.com/dev";
@@ -9,6 +10,9 @@ const URL_BASE = "https://se82gn6gng.execute-api.us-east-2.amazonaws.com/prod";
 
 const ROUTE_PARKS = "/parks";
 const ROUTE_RIDES = "/waits";
+
+const REUSE_POS_STORAGE_KEY = "lastPos";
+const REUSE_POS_THRESHOLD_SEC = 60;
 
 (:glance)
 class RideWaitTimesWidgetApp extends Application.AppBase {
@@ -50,6 +54,24 @@ class RideWaitTimesWidgetApp extends Application.AppBase {
 
     // onStart() is called on application start up
     function onStart(state as Dictionary?) as Void {
+    	// check for stored position
+    	var lastPos = Application.Storage.getValue(REUSE_POS_STORAGE_KEY);
+    	//System.println(lastPos);
+    	if (lastPos != null && lastPos[0] != null && lastPos[1] != null && lastPos[2] != null) {
+    		// compare current time with last time, and take abs value
+    		var now = Time.now().value();
+    		var delta = now - lastPos[0];
+    		if (delta < 0) {
+    			delta = delta * -1;
+    		}
+    		// if the time difference is less than threshold, use it
+    		//System.println(delta);
+    		if (delta < REUSE_POS_THRESHOLD_SEC) {
+    			setLat(lastPos[1]);
+    			setLon(lastPos[2]);
+    		}
+    	}
+    	
     	requestPositionUpdate();
     }
     
@@ -63,6 +85,9 @@ class RideWaitTimesWidgetApp extends Application.AppBase {
 		var degrees = info.position.toDegrees();
         setLat(degrees[0]);
 		setLon(degrees[1]);
+		
+		var now = Time.now().value();
+		Application.Storage.setValue(REUSE_POS_STORAGE_KEY, [now, getLat(), getLon()]);
 		
 		WatchUi.requestUpdate();
     }
@@ -128,10 +153,16 @@ class RideWaitTimesWidgetApp extends Application.AppBase {
 	    var menu = new WatchUi.Menu2({:title=>"Error"});
         var delegate;
        
+        var errorMsg = "";
+        if (errorCode == Communications.BLE_CONNECTION_UNAVAILABLE) {
+            errorMsg = "Connection Unavailable";
+        } else {
+            errorMsg = "Code: " + errorCode.toString();
+        }
    	    menu.addItem(
             new WatchUi.MenuItem(
                 "Check Connection",
-                "Code: " + errorCode.toString(),
+                errorMsg,
                 errorCode,
                 {}
             )
