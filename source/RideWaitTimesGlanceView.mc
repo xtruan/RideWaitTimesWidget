@@ -22,11 +22,11 @@ class RideWaitTimesGlanceView extends Ui.GlanceView {
         // }
         dc.setColor( Gfx.COLOR_WHITE, Gfx.COLOR_TRANSPARENT );
         dc.drawText(
-		        0, //dc.getWidth() / 2,                 // gets the width of the device and divides by 2
-		        (dc.getHeight() / 2) - (Gfx.getFontHeight(Gfx.FONT_SMALL) / 2), // gets the height of the device and divides by 2
-		        Gfx.FONT_SMALL,                         // sets the font size
-		        string,                                 // the String to display
-		        Gfx.TEXT_JUSTIFY_LEFT                   // sets the justification for the text
-		           );
+                0, //dc.getWidth() / 2,                 // gets the width of the device and divides by 2
+                (dc.getHeight() / 2) - (Gfx.getFontHeight(Gfx.FONT_SMALL) / 2), // gets the height of the device and divides by 2
+                Gfx.FONT_SMALL,                         // sets the font size
+                string,                                 // the String to display
+                Gfx.TEXT_JUSTIFY_LEFT                   // sets the justification for the text
+                   );
     }
 }

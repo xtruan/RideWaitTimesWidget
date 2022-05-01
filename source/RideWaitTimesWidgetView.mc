@@ -28,19 +28,19 @@ class RideWaitTimesWidgetView extends Ui.View {
     }
     
     function updateProgress() {
-	    progressDots = progressDots + ".";
-	    if (progressDots.length() > 3) {
-	        progressDots = ".";
-	    }
-	    if (progressDots.length() == 1) {
-	        msgColor = Gfx.COLOR_BLUE;
-	    } else if (progressDots.length() == 2) {
-	    	msgColor = Gfx.COLOR_PINK;
-	    } else {
-	        msgColor = Gfx.COLOR_YELLOW;
-	    }
-	    Ui.requestUpdate();
-	}
+        progressDots = progressDots + ".";
+        if (progressDots.length() > 3) {
+            progressDots = ".";
+        }
+        if (progressDots.length() == 1) {
+            msgColor = Gfx.COLOR_BLUE;
+        } else if (progressDots.length() == 2) {
+            msgColor = Gfx.COLOR_PINK;
+        } else {
+            msgColor = Gfx.COLOR_YELLOW;
+        }
+        Ui.requestUpdate();
+    }
 
     function onHide() {
         //Pos.enableLocationEvents(Position.LOCATION_DISABLE, method(:onPosition));
@@ -77,8 +77,8 @@ class RideWaitTimesWidgetView extends Ui.View {
         
         // Check if position is valid
         if (App.getApp().getLat() != 999 && App.getApp().getLon() != 999) {
-        	
-        	if (progressTimer != null) {
+            
+            if (progressTimer != null) {
                 progressTimer.stop();
             }
         
@@ -106,24 +106,24 @@ class RideWaitTimesWidgetView extends Ui.View {
             
             pos = pos + Gfx.getFontHeight(Gfx.FONT_MEDIUM) + 15;
             var image = Ui.loadResource(Rez.Drawables.Castle);
-			dc.drawBitmap( (dc.getWidth() / 2) - 30, pos, image );
-			
-			// show position quality as dot
-			//pos = pos + 70;
-			pos = 10;
-			var posQuality = App.getApp().getPosQuality();
-			if (posQuality == Pos.QUALITY_GOOD) {
+            dc.drawBitmap( (dc.getWidth() / 2) - 30, pos, image );
+            
+            // show position quality as dot
+            //pos = pos + 70;
+            pos = 10;
+            var posQuality = App.getApp().getPosQuality();
+            if (posQuality == Pos.QUALITY_GOOD) {
                 dc.setColor( Gfx.COLOR_GREEN, Gfx.COLOR_TRANSPARENT );
             } else if (posQuality == Pos.QUALITY_USABLE) {
                 dc.setColor( Gfx.COLOR_YELLOW, Gfx.COLOR_TRANSPARENT );
             } else if (posQuality == Pos.QUALITY_POOR) {
                 dc.setColor( Gfx.COLOR_RED, Gfx.COLOR_TRANSPARENT );
             } else if (posQuality == Pos.QUALITY_LAST_KNOWN) {
-            	dc.setColor( Gfx.COLOR_BLUE, Gfx.COLOR_TRANSPARENT );
+                dc.setColor( Gfx.COLOR_BLUE, Gfx.COLOR_TRANSPARENT );
             } else {
-            	dc.setColor( Gfx.COLOR_WHITE, Gfx.COLOR_TRANSPARENT );
+                dc.setColor( Gfx.COLOR_WHITE, Gfx.COLOR_TRANSPARENT );
             }
-			dc.fillCircle( (dc.getWidth() / 2), pos, 5);
+            dc.fillCircle( (dc.getWidth() / 2), pos, 5);
             
           } else {
           

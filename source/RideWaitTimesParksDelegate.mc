@@ -8,12 +8,22 @@ class RideWaitTimesParksDelegate extends Ui.BehaviorDelegate {
     }
 
     function onMenu() {
-    	var lat = App.getApp().getLat();
-    	var lon = App.getApp().getLon();
-    	if (lat != 999 && lon != 999) {
-        	App.getApp().makeRequestParks(20, method(:onReceiveParks));
+        var lat = App.getApp().getLat();
+        var lon = App.getApp().getLon();
+        if (lat != 999 && lon != 999) {
+            App.getApp().makeRequestParks(20, method(:onReceiveParks));
+            
+            var progressBar = new Ui.ProgressBar(
+                "Loading parks...",
+                null
+            );
+            Ui.pushView(
+                progressBar,
+                null,
+                Ui.SLIDE_IMMEDIATE
+            );
         } else {
-        	onListRegions();
+            onListRegions();
         }
     }
     
@@ -24,77 +34,79 @@ class RideWaitTimesParksDelegate extends Ui.BehaviorDelegate {
     }
     
     function onSelect() {
-    	onMenu();
+        onMenu();
     }
     
    // Set up the response callback function
    function onReceiveParks(responseCode, data) {
-   	   
-   	   App.getApp().setRequestInProgress(false);
-   	   
-   	   // check response code
-   	   if (responseCode < 200 || responseCode >= 300) {
-   	   	   App.getApp().showErrorView(responseCode);
-   	   	   return;
-   	   }
-   	   
+          
+          App.getApp().setRequestInProgress(false);
+          
+          // check response code
+          if (responseCode < 200 || responseCode >= 300) {
+                 App.getApp().showErrorView(responseCode);
+                 return;
+          }
+          
        // Get only the JSON data we are interested in and call the view class
        var menu = new Ui.Menu2({:title=>"Select Park"});
        var delegate;
        
        var i;
        for (i = 0; i < data.get("parks").size(); i++) {
-       	   //System.println(data.get("parks")[i].get("name"));
-       	   
-       	   var firstPart = data.get("parks")[i].get("name");
-       	   var secondPart = "";
-       	   var index = firstPart.find(" ");
-       	   if (index != null) {
-       	   	   secondPart = firstPart.substring(index+1, firstPart.length());
-       	       firstPart = firstPart.substring(0, index);
-       	   }
-       	   
-       	   if (firstPart.length() < 4) {
-       	   	   var thirdPart = "";
-       	   	   index = secondPart.find(" ");
-       	   	   if (index != null) {
-	       	   	   thirdPart = secondPart.substring(index+1, secondPart.length());
-	       	       secondPart = secondPart.substring(0, index);
-	       	       firstPart = firstPart + " " + secondPart;
-	       	       secondPart = thirdPart;
-	       	       thirdPart = null;
-	       	   }
-       	   }
-       	   
-	       menu.addItem(
-	           new Ui.MenuItem(
-	               firstPart,
-	               secondPart,
-	               data.get("parks")[i].get("id"),
-	               {}
-	           )
-	       );
+              //System.println(data.get("parks")[i].get("name"));
+              
+              var firstPart = data.get("parks")[i].get("name");
+              var secondPart = "";
+              var index = firstPart.find(" ");
+              if (index != null) {
+                     secondPart = firstPart.substring(index+1, firstPart.length());
+                  firstPart = firstPart.substring(0, index);
+              }
+              
+              if (firstPart.length() < 4) {
+                     var thirdPart = "";
+                     index = secondPart.find(" ");
+                     if (index != null) {
+                         thirdPart = secondPart.substring(index+1, secondPart.length());
+                      secondPart = secondPart.substring(0, index);
+                      firstPart = firstPart + " " + secondPart;
+                      secondPart = thirdPart;
+                      thirdPart = null;
+                  }
+              }
+              
+           menu.addItem(
+               new Ui.MenuItem(
+                   firstPart,
+                   secondPart,
+                   data.get("parks")[i].get("id"),
+                   {}
+               )
+           );
        }
        
        if (i == 0) {
-       	   menu.addItem(
-	           new Ui.MenuItem(
-	               "No Parks",
-	               "Reporting Status",
-	               i,
-	               {}
-	           )
-	       );
+              menu.addItem(
+               new Ui.MenuItem(
+                   "No Parks",
+                   "Reporting Status",
+                   i,
+                   {}
+               )
+           );
        }
        
        delegate = new RideWaitTimesRidesDelegate(); // a WatchUi.Menu2InputDelegate
-       Ui.pushView(menu, delegate, Ui.SLIDE_IMMEDIATE);
+       
+       Ui.popView(Ui.SLIDE_IMMEDIATE); // dismiss progress
+       Ui.pushView(menu, delegate, Ui.SLIDE_IMMEDIATE); // show menu
    }
    
    function onListRegions() {
        var menu = new Ui.Menu2({:title=>"Select Region"});
        var delegate;
-       	   
+              
        menu.addItem(
            new Ui.MenuItem(
                "North America",
@@ -168,7 +180,7 @@ class RegionsListMenu2Delegate extends Ui.Menu2InputDelegate {
     hidden var mCallback;
     
     function initialize(callback) {
-    	mCallback = callback;
+        mCallback = callback;
         Menu2InputDelegate.initialize();
     }
 

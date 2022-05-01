@@ -17,45 +17,45 @@ const REUSE_POS_THRESHOLD_SEC = 60;
 (:glance)
 class RideWaitTimesWidgetApp extends Application.AppBase {
 
-	hidden var mLat = 999;
-	hidden var mLon = 999;
-	hidden var mPosQuality = Position.QUALITY_LAST_KNOWN;
-	
-	hidden var mRequestInProgress = false;
+    hidden var mLat = 999;
+    hidden var mLon = 999;
+    hidden var mPosQuality = Position.QUALITY_LAST_KNOWN;
+    
+    hidden var mRequestInProgress = false;
 
-	function setLat(lat) {
-		mLat = lat;
-	}
-	
-	function getLat() {
-		return mLat;
-	}
-	
-	function setLon(lon) {
-		mLon = lon;
-	}
-	
-	function getLon() {
-		return mLon;
-	}
-	
-	function setPosQuality(posQuality) {
-		mPosQuality = posQuality;
-	}
-	
-	function getPosQuality() {
-		return mPosQuality;
-	}
-	
-	function setRequestInProgress(requestInProgress) {
-		mRequestInProgress = requestInProgress;
-		//System.println("set request: " + mRequestInProgress.toString());
-	}
-	
-	function isRequestInProgress() {
-	    //System.println("is request: " + mRequestInProgress.toString());
-		return mRequestInProgress;
-	}
+    function setLat(lat) {
+        mLat = lat;
+    }
+    
+    function getLat() {
+        return mLat;
+    }
+    
+    function setLon(lon) {
+        mLon = lon;
+    }
+    
+    function getLon() {
+        return mLon;
+    }
+    
+    function setPosQuality(posQuality) {
+        mPosQuality = posQuality;
+    }
+    
+    function getPosQuality() {
+        return mPosQuality;
+    }
+    
+    function setRequestInProgress(requestInProgress) {
+        mRequestInProgress = requestInProgress;
+        //System.println("set request: " + mRequestInProgress.toString());
+    }
+    
+    function isRequestInProgress() {
+        //System.println("is request: " + mRequestInProgress.toString());
+        return mRequestInProgress;
+    }
 
     function initialize() {
         AppBase.initialize();
@@ -63,48 +63,48 @@ class RideWaitTimesWidgetApp extends Application.AppBase {
 
     // onStart() is called on application start up
     function onStart(state as Dictionary?) as Void {
-    	// check for stored position
-    	var lastPos = Application.Storage.getValue(REUSE_POS_STORAGE_KEY);
-    	//System.println(lastPos);
-    	if (lastPos != null && lastPos[0] != null && lastPos[1] != null && lastPos[2] != null) {
-    		// compare current time with last time, and take abs value
-    		var now = Time.now().value();
-    		var delta = now - lastPos[0];
-    		if (delta < 0) {
-    			delta = delta * -1;
-    		}
-    		// if the time difference is less than threshold, use it
-    		//System.println(delta);
-    		if (delta < REUSE_POS_THRESHOLD_SEC) {
-    			setLat(lastPos[1]);
-    			setLon(lastPos[2]);
-    		}
-    	}
-    	
-    	requestPositionUpdate();
+        // check for stored position
+        var lastPos = Application.Storage.getValue(REUSE_POS_STORAGE_KEY);
+        //System.println(lastPos);
+        if (lastPos != null && lastPos[0] != null && lastPos[1] != null && lastPos[2] != null) {
+            // compare current time with last time, and take abs value
+            var now = Time.now().value();
+            var delta = now - lastPos[0];
+            if (delta < 0) {
+                delta = delta * -1;
+            }
+            // if the time difference is less than threshold, use it
+            //System.println(delta);
+            if (delta < REUSE_POS_THRESHOLD_SEC) {
+                setLat(lastPos[1]);
+                setLon(lastPos[2]);
+            }
+        }
+        
+        requestPositionUpdate();
     }
     
     function requestPositionUpdate() {
-    	Position.enableLocationEvents(Position.LOCATION_ONE_SHOT, method(:onPosition));
+        Position.enableLocationEvents(Position.LOCATION_ONE_SHOT, method(:onPosition));
     }
     
     // position change callback
     function onPosition(info) {
         
-		var degrees = info.position.toDegrees();
+        var degrees = info.position.toDegrees();
         setLat(degrees[0]);
-		setLon(degrees[1]);
-		setPosQuality(info.accuracy);
-		
-		var now = Time.now().value();
-		Application.Storage.setValue(REUSE_POS_STORAGE_KEY, [now, getLat(), getLon()]);
-		
-		WatchUi.requestUpdate();
+        setLon(degrees[1]);
+        setPosQuality(info.accuracy);
+        
+        var now = Time.now().value();
+        Application.Storage.setValue(REUSE_POS_STORAGE_KEY, [now, getLat(), getLon()]);
+        
+        WatchUi.requestUpdate();
     }
 
     // onStop() is called when your application is exiting
     function onStop(state as Dictionary?) as Void {
-    	Position.enableLocationEvents(Position.LOCATION_DISABLE, method(:onPosition));
+        Position.enableLocationEvents(Position.LOCATION_DISABLE, method(:onPosition));
     }
     
     function getGlanceView() {
@@ -119,10 +119,10 @@ class RideWaitTimesWidgetApp extends Application.AppBase {
     function makeRequestParks(limit, callback) {
         
         if (isRequestInProgress()) {
-        	//System.println("request in progress!");
-    		return;
-    	}
-    	
+            //System.println("request in progress!");
+            return;
+        }
+        
         var url = URL_BASE + ROUTE_PARKS;
         var params = { // set the parameters
           "lat" => getLat().toString(),
@@ -134,17 +134,17 @@ class RideWaitTimesWidgetApp extends Application.AppBase {
           :responseType => Communications.HTTP_RESPONSE_CONTENT_TYPE_JSON
         };
 
-		setRequestInProgress(true);
+        setRequestInProgress(true);
         Communications.makeWebRequest(url, params, options, callback);
     }
     
     function makeRequestRides(id, callback) {
-    	
-    	if (isRequestInProgress()) {
-    	    //System.println("request in progress!");
-    		return;
-    	}
-    	
+        
+        if (isRequestInProgress()) {
+            //System.println("request in progress!");
+            return;
+        }
+        
         var url = URL_BASE + ROUTE_RIDES;
         var params = { // set the parameters
           "id" => id.toString()
@@ -154,13 +154,13 @@ class RideWaitTimesWidgetApp extends Application.AppBase {
           :responseType => Communications.HTTP_RESPONSE_CONTENT_TYPE_JSON
         };
 
-		setRequestInProgress(true);
+        setRequestInProgress(true);
         Communications.makeWebRequest(url, params, options, callback);
     }
-	
-	
-	function showErrorView(errorCode) {
-	    var menu = new WatchUi.Menu2({:title=>"Error"});
+    
+    
+    function showErrorView(errorCode) {
+        var menu = new WatchUi.Menu2({:title=>"Error"});
         var delegate;
        
         var errorMsg = "";
@@ -169,7 +169,7 @@ class RideWaitTimesWidgetApp extends Application.AppBase {
         } else {
             errorMsg = "Code: " + errorCode.toString();
         }
-   	    menu.addItem(
+           menu.addItem(
             new WatchUi.MenuItem(
                 "Check Connection",
                 errorMsg,
@@ -180,7 +180,7 @@ class RideWaitTimesWidgetApp extends Application.AppBase {
        
         delegate = new DummyMenu2Delegate(); // a WatchUi.Menu2InputDelegate
         WatchUi.pushView(menu, delegate, WatchUi.SLIDE_IMMEDIATE);
-	 }
+    }
 }
 
 function getApp() as RideWaitTimesWidgetApp {
