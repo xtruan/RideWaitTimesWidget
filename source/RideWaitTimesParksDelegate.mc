@@ -53,14 +53,14 @@ class RideWaitTimesParksDelegate extends Ui.BehaviorDelegate {
        var delegate;
        
        var i;
-       for (i = 0; i < data.get("parks").size(); i++) {
-              //System.println(data.get("parks")[i].get("name"));
+       for (i = 0; i < data.size(); i++) {
+              //System.println(data[i].get("n"));
               
-              var firstPart = data.get("parks")[i].get("name");
+              var firstPart = data[i].get("n");
               var secondPart = "";
               var index = firstPart.find(" ");
               if (index != null) {
-                     secondPart = firstPart.substring(index+1, firstPart.length());
+                  secondPart = firstPart.substring(index+1, firstPart.length());
                   firstPart = firstPart.substring(0, index);
               }
               
@@ -69,10 +69,10 @@ class RideWaitTimesParksDelegate extends Ui.BehaviorDelegate {
                      index = secondPart.find(" ");
                      if (index != null) {
                          thirdPart = secondPart.substring(index+1, secondPart.length());
-                      secondPart = secondPart.substring(0, index);
-                      firstPart = firstPart + " " + secondPart;
-                      secondPart = thirdPart;
-                      thirdPart = null;
+                         secondPart = secondPart.substring(0, index);
+                         firstPart = firstPart + " " + secondPart;
+                         secondPart = thirdPart;
+                         thirdPart = null;
                   }
               }
               
@@ -80,7 +80,7 @@ class RideWaitTimesParksDelegate extends Ui.BehaviorDelegate {
                new Ui.MenuItem(
                    firstPart,
                    secondPart,
-                   data.get("parks")[i].get("id"),
+                   data[i].get("i"),
                    {}
                )
            );

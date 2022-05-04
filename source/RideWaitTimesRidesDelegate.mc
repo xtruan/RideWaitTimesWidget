@@ -37,19 +37,19 @@ class RideWaitTimesRidesDelegate extends Ui.Menu2InputDelegate {
        var delegate;
        
        var i;
-       for (i = 0; i < data.get("rides").size(); i++) {
-              //System.println(data.get("rides")[i].get("name"));
+       for (i = 0; i < data.size(); i++) {
+              //System.println(data[i].get("n"));
               
-              var waitTime = data.get("rides")[i].get("wait_time").toString();
-              if (waitTime.equals("9999")) {
+              var waitTime = data[i].get("w").toString();
+              if (waitTime.equals("-1")) {
                     waitTime = "CLOSED";
                } else {
-                       waitTime = waitTime + " mins";
+                    waitTime = waitTime + " mins";
                }
            menu.addItem(
                new Ui.MenuItem(
                    waitTime,
-                   data.get("rides")[i].get("name"),
+                   data[i].get("n"),
                    i,
                    {}
                )
