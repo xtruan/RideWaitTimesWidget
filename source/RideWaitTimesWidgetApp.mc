@@ -127,7 +127,7 @@ class RideWaitTimesWidgetApp extends Application.AppBase {
         var params = { // set the parameters
           "lat" => getLat().toString(),
           "lon" => getLon().toString(),
-          "compact" => "parks" // shorten JSON keys to single character
+          "min" => "p" // shorten JSON keys to single character
           //"limit" => limit.toString()
         };
         var options = {
@@ -149,7 +149,7 @@ class RideWaitTimesWidgetApp extends Application.AppBase {
         var url = URL_BASE + ROUTE_RIDES;
         var params = { // set the parameters
           "id" => id.toString(),
-          "compact" => "waits" // shorten JSON keys to single character
+          "min" => "w" // shorten JSON keys to single character
         };
         var options = {
           :method => Communications.HTTP_REQUEST_METHOD_GET,
