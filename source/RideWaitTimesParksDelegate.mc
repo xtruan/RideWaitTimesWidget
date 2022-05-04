@@ -11,8 +11,7 @@ class RideWaitTimesParksDelegate extends Ui.BehaviorDelegate {
         var lat = App.getApp().getLat();
         var lon = App.getApp().getLon();
         if (lat != 999 && lon != 999) {
-            App.getApp().makeRequestParks(20, method(:onReceiveParks));
-            
+            // show loading screen
             var progressBar = new Ui.ProgressBar(
                 "Loading parks...",
                 null
@@ -22,6 +21,8 @@ class RideWaitTimesParksDelegate extends Ui.BehaviorDelegate {
                 null,
                 Ui.SLIDE_IMMEDIATE
             );
+            // make web request
+            App.getApp().makeRequestParks(20, method(:onReceiveParks));
         } else {
             onListRegions();
         }
@@ -40,13 +41,14 @@ class RideWaitTimesParksDelegate extends Ui.BehaviorDelegate {
    // Set up the response callback function
    function onReceiveParks(responseCode, data) {
           
-          App.getApp().setRequestInProgress(false);
+       App.getApp().setRequestInProgress(false);
           
-          // check response code
-          if (responseCode < 200 || responseCode >= 300) {
-                 App.getApp().showErrorView(responseCode);
-                 return;
-          }
+       // check response code
+       if (responseCode < 200 || responseCode >= 300) {
+           Ui.popView(Ui.SLIDE_IMMEDIATE); // dismiss progress
+           App.getApp().showErrorView(responseCode);
+           return;
+       }
           
        // Get only the JSON data we are interested in and call the view class
        var menu = new Ui.Menu2({:title=>"Select Park"});

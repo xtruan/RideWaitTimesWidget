@@ -8,8 +8,7 @@ class RideWaitTimesRidesDelegate extends Ui.Menu2InputDelegate {
     }
 
     function onSelect(item) {
-        App.getApp().makeRequestRides(item.getId(), method(:onReceiveRides));
-        
+        // show loading screen
         var progressBar = new Ui.ProgressBar(
             "Loading waits...",
             null
@@ -19,6 +18,8 @@ class RideWaitTimesRidesDelegate extends Ui.Menu2InputDelegate {
             null,
             Ui.SLIDE_IMMEDIATE
         );
+        // make web request
+        App.getApp().makeRequestRides(item.getId(), method(:onReceiveRides));
     }
     
     // set up the response callback function
@@ -28,9 +29,10 @@ class RideWaitTimesRidesDelegate extends Ui.Menu2InputDelegate {
     
        // check response code
        if (responseCode < 200 || responseCode >= 300) {
-                 App.getApp().showErrorView(responseCode);
-                 return;
-          }
+           Ui.popView(Ui.SLIDE_IMMEDIATE); // dismiss progress
+           App.getApp().showErrorView(responseCode);
+           return;
+       }
     
        //Get only the JSON data we are interested in and call the view class
        var menu = new Ui.Menu2({:title=>"Wait Times"});
