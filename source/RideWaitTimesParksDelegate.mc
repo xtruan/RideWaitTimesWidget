@@ -8,6 +8,16 @@ class RideWaitTimesParksDelegate extends Ui.BehaviorDelegate {
     }
 
     function onMenu() {
+        onListRegions();
+    }
+    
+    function onKey(key) {
+        if (key.getKey() == Ui.KEY_ENTER) {
+            onSelect();
+        }
+    }
+    
+    function onSelect() {
         var lat = App.getApp().getLat();
         var lon = App.getApp().getLon();
         if (lat != 999 && lon != 999) {
@@ -26,16 +36,6 @@ class RideWaitTimesParksDelegate extends Ui.BehaviorDelegate {
         } else {
             onListRegions();
         }
-    }
-    
-    function onKey(key) {
-        if (key.getKey() == Ui.KEY_ENTER) {
-            onMenu();
-        }
-    }
-    
-    function onSelect() {
-        onMenu();
     }
     
    // Set up the response callback function
@@ -172,7 +172,7 @@ class RideWaitTimesParksDelegate extends Ui.BehaviorDelegate {
            )
        );
        
-       delegate = new RegionsListMenu2Delegate(method(:onMenu)); // a WatchUi.Menu2InputDelegate
+       delegate = new RegionsListMenu2Delegate(method(:onSelect)); // a WatchUi.Menu2InputDelegate
        Ui.pushView(menu, delegate, Ui.SLIDE_IMMEDIATE);
    }
 }
