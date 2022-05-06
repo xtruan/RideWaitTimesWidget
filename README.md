@@ -9,7 +9,7 @@ How to use:
 
 2) When the widget is started, it immediately starts searching for your location, this can take up to 30 seconds. If you don't want to wait, tap the screen or press start to select the region closest to you.
 
-3) When you see the castle, tap or press start to see the list of theme parks closest to you. This can take a few seconds to load and requires your device to be connected to your phone via Bluetooth.
+3) When you see the castle, tap or press start to see the list of theme parks closest to you. This can take a few seconds to load and requires your device to be connected to your phone via Bluetooth. To manually search by region, instead of your location, press menu instead.
 
 4) Select a theme park to see the wait times sorted from shortest to longest. This can take a few seconds to load and requires your device to be connected to your phone via Bluetooth.
 
@@ -23,4 +23,4 @@ Powered by Queue-Times.com Real Time Theme Park Wait Times API - https://queue-t
 
 Castle icon courtesy of Flaticon - https://www.flaticon.com/free-icons/castle
 
-This widget is not affiliated with any theme park operator. No guarantee on accuracy of wait times.
+This widget is not affiliated with any theme park or theme park operator. No guarantee on accuracy of wait times.
