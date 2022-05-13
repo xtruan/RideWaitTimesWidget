@@ -178,15 +178,21 @@ class RideWaitTimesWidgetApp extends Application.AppBase {
         var menu = new WatchUi.Menu2({:title=>"Error"});
         var delegate;
        
+        var errorHdg = "Phone";
         var errorMsg = "";
         if (errorCode == Communications.BLE_CONNECTION_UNAVAILABLE) {
-            errorMsg = "Connection Unavailable";
+            errorMsg = "Not connected";
+        } else if (errorCode == Communications.BLE_HOST_TIMEOUT) {
+            errorMsg = "Did not respond";
+        } else if (errorCode == Communications.BLE_SERVER_TIMEOUT) {
+            errorMsg = "Data too slow";
         } else {
-            errorMsg = "Code: " + errorCode.toString();
+            errorHdg = "Connection";
+            errorMsg = "Error code: " + errorCode.toString();
         }
-           menu.addItem(
+        menu.addItem(
             new WatchUi.MenuItem(
-                "Check Connection",
+                errorHdg,
                 errorMsg,
                 errorCode,
                 {}
