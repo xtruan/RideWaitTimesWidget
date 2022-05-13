@@ -1,7 +1,7 @@
 # Theme Park Wait Times - Widget
 Theme Park Wait Times widget for Garmin Connect IQ - https://apps.garmin.com/en-US/apps/e9623de9-8a8e-4afc-9169-75883c8b1325
 
-Going to your favorite theme park? Get the wait times for all the rides right on your wrist! This widget uses your GPS location to find the closest theme parks to you. Simply select a park to see the wait times for every ride sorted by shortest to longest! Supports 100+ different parks worldwide, including Disney, Universal, and Six Flags. Full list of supported parks available here: https://queue-times.com/parks.
+Going to your favorite theme park? Get the wait times for all the rides right on your wrist! This widget uses your GPS location to find the closest theme parks to you. Simply select a park to see the wait times for every ride! Supports 100+ different parks worldwide, including Disney, Universal, and Six Flags. Full list of supported parks available here: https://queue-times.com/parks.
 
 How to use:
 
@@ -11,7 +11,7 @@ How to use:
 
 3) When you see the castle, tap or press start to see the list of theme parks closest to you. This can take a few seconds to load and requires your device to be connected to your phone via Bluetooth. To manually search by region, instead of your location, press menu instead.
 
-4) Select a theme park to see the wait times sorted from shortest to longest. This can take a few seconds to load and requires your device to be connected to your phone via Bluetooth.
+4) Select a theme park and sort mode to see the wait times sorted in that fashion. This can take a few seconds to load and requires your device to be connected to your phone via Bluetooth.
 
 5) Press the back button to select a different park or continue pressing to quit. Location is refreshed each time the castle is displayed.
 

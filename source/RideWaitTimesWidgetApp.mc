@@ -1,3 +1,4 @@
+using Toybox.System;
 using Toybox.Application;
 using Toybox.Lang;
 using Toybox.WatchUi;
@@ -116,6 +117,15 @@ class RideWaitTimesWidgetApp extends Application.AppBase {
         return [ new RideWaitTimesWidgetView(), new RideWaitTimesParksDelegate() ] as Array<Views or InputDelegates>;
     }
     
+    function getFreeMem() {
+        var freeMem = -1;
+        var stats = System.getSystemStats();
+        if (stats has :freeMemory) {
+            freeMem = stats.freeMemory;
+        }
+        return freeMem;
+    }
+    
     function makeRequestParks(limit, callback) {
         
         if (isRequestInProgress()) {
@@ -127,8 +137,9 @@ class RideWaitTimesWidgetApp extends Application.AppBase {
         var params = { // set the parameters
           "lat" => getLat().toString(),
           "lon" => getLon().toString(),
-          "min" => "p" // shorten JSON keys to single character
-          //"limit" => limit.toString()
+          "min" => "p", // shorten JSON keys to single character
+          //"lmt" => limit.toString(),
+          "mem" => getFreeMem()
         };
         var options = {
           :method => Communications.HTTP_REQUEST_METHOD_GET,
@@ -139,7 +150,7 @@ class RideWaitTimesWidgetApp extends Application.AppBase {
         Communications.makeWebRequest(url, params, options, callback);
     }
     
-    function makeRequestRides(id, callback) {
+    function makeRequestRides(opts, callback) {
         
         if (isRequestInProgress()) {
             //System.println("request in progress!");
@@ -148,8 +159,10 @@ class RideWaitTimesWidgetApp extends Application.AppBase {
         
         var url = URL_BASE + ROUTE_RIDES;
         var params = { // set the parameters
-          "id" => id.toString(),
-          "min" => "w" // shorten JSON keys to single character
+          "id" => opts[0],
+          "srt" => opts[1],
+          "min" => "w", // shorten JSON keys to single character
+          "mem" => getFreeMem()
         };
         var options = {
           :method => Communications.HTTP_REQUEST_METHOD_GET,

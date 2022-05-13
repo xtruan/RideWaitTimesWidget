@@ -42,12 +42,15 @@ class RideWaitTimesRidesDelegate extends Ui.Menu2InputDelegate {
        for (i = 0; i < data.size(); i++) {
               //System.println(data[i].get("n"));
               
-              var waitTime = data[i].get("w").toString();
-              if (waitTime.equals("-1")) {
-                    waitTime = "CLOSED";
-               } else {
-                    waitTime = waitTime + " mins";
-               }
+           var waitTime = data[i].get("w").toString();
+           if (waitTime.equals("-1")) {
+               waitTime = "-- Closed --";
+           } else if (waitTime.equals("0")) {
+               waitTime = "Open";
+           } else {
+               waitTime = waitTime + " mins";
+           }
+              
            menu.addItem(
                new Ui.MenuItem(
                    waitTime,

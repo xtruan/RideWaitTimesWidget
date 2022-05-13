@@ -99,7 +99,7 @@ class RideWaitTimesParksDelegate extends Ui.BehaviorDelegate {
            );
        }
        
-       delegate = new RideWaitTimesRidesDelegate(); // a WatchUi.Menu2InputDelegate
+       delegate = new RideWaitTimesSortDelegate(); // a WatchUi.Menu2InputDelegate
        
        Ui.popView(Ui.SLIDE_IMMEDIATE); // dismiss progress
        Ui.pushView(menu, delegate, Ui.SLIDE_IMMEDIATE); // show menu
