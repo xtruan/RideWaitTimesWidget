@@ -188,6 +188,8 @@ class RideWaitTimesWidgetApp extends Application.AppBase {
             errorMsg = "Did not respond";
         } else if (errorCode == Communications.BLE_SERVER_TIMEOUT) {
             errorMsg = "Data too slow";
+        } else if (errorCode == Communications.NETWORK_REQUEST_TIMED_OUT) {
+            errorMsg = "Network too slow";
         } else {
             errorHdg = "Connection";
             errorMsg = "Error code: " + errorCode.toString();
