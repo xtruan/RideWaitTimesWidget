@@ -13,7 +13,7 @@ const ROUTE_PARKS = "/parks";
 const ROUTE_RIDES = "/waits";
 
 const REUSE_POS_STORAGE_KEY = "lastPos";
-const REUSE_POS_THRESHOLD_SEC = 60;
+const REUSE_POS_THRESHOLD_SEC = 3600 * 4; // 4 hours
 
 (:glance)
 class RideWaitTimesWidgetApp extends Application.AppBase {
@@ -79,6 +79,8 @@ class RideWaitTimesWidgetApp extends Application.AppBase {
             if (delta < REUSE_POS_THRESHOLD_SEC) {
                 setLat(lastPos[1]);
                 setLon(lastPos[2]);
+                // refresh stored position with time == now
+                Application.Storage.setValue(REUSE_POS_STORAGE_KEY, [now, getLat(), getLon()]);
             }
         }
         
