@@ -80,7 +80,7 @@ class RideWaitTimesWidgetApp extends Application.AppBase {
                 setLat(lastPos[1]);
                 setLon(lastPos[2]);
                 // refresh stored position with time == now
-                Application.Storage.setValue(REUSE_POS_STORAGE_KEY, [now, getLat(), getLon()]);
+                //Application.Storage.setValue(REUSE_POS_STORAGE_KEY, [now, getLat(), getLon()]);
             }
         }
         
