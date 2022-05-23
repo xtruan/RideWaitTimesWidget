@@ -7,7 +7,7 @@ How to use:
 
 1) Select the "Wait Times" widget in your device's app carousel or glance page.
 
-2) When the widget is started, it immediately starts searching for your location, this can take up to 30 seconds. If you don't want to wait, tap the screen or press start to select the region closest to you.
+2) When the widget is started, it immediately starts searching for your location, this can take up to 30 seconds. If you don't want to wait, tap the screen or press start to select the region closest to you. The last location is cached on your watch for 8 hours to speed up this step during park days.
 
 3) When you see the castle, tap or press start to see the list of theme parks closest to you. This can take a few seconds to load and requires your device to be connected to your phone via Bluetooth. To manually search by region, instead of your location, press menu instead.
 
