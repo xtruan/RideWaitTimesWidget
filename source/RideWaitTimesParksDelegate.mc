@@ -190,6 +190,7 @@ class RegionsListMenu2Delegate extends Ui.Menu2InputDelegate {
         //System.println(item.getId());
         App.getApp().setLat(item.getId()[0]);
         App.getApp().setLon(item.getId()[1]);
+        App.getApp().setPosTime(-1);
         
         mCallback.invoke();
     }

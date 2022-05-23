@@ -13,7 +13,7 @@ const ROUTE_PARKS = "/parks";
 const ROUTE_RIDES = "/waits";
 
 const REUSE_POS_STORAGE_KEY = "lastPos";
-const REUSE_POS_THRESHOLD_SEC = 3600 * 4; // 4 hours
+const REUSE_POS_THRESHOLD_SEC = 3600 * 8; // 8 hours
 
 (:glance)
 class RideWaitTimesWidgetApp extends Application.AppBase {
@@ -21,6 +21,7 @@ class RideWaitTimesWidgetApp extends Application.AppBase {
     hidden var mLat = 999;
     hidden var mLon = 999;
     hidden var mPosQuality = Position.QUALITY_LAST_KNOWN;
+    hidden var mPosTime = -1;
     
     hidden var mRequestInProgress = false;
 
@@ -48,6 +49,14 @@ class RideWaitTimesWidgetApp extends Application.AppBase {
         return mPosQuality;
     }
     
+    function setPosTime(posTime) {
+        mPosTime = posTime;
+    }
+    
+    function getPosTime() {
+        return mPosTime;
+    }
+    
     function setRequestInProgress(requestInProgress) {
         mRequestInProgress = requestInProgress;
         //System.println("set request: " + mRequestInProgress.toString());
@@ -56,6 +65,26 @@ class RideWaitTimesWidgetApp extends Application.AppBase {
     function isRequestInProgress() {
         //System.println("is request: " + mRequestInProgress.toString());
         return mRequestInProgress;
+    }
+    
+    function calculatePosAge() {
+        var lastTime = getPosTime();
+        // only valid if time is positive
+        if (lastTime > 0) {
+            return calculateDelta(lastTime);
+        } else {
+            return lastTime;
+        }
+    }
+    
+    function calculateDelta(lastTime) {
+        // compare current time with last time, and take abs value
+        var now = Time.now().value();
+        var delta = now - lastTime;
+        if (delta < 0) {
+            delta = delta * -1;
+        }
+        return delta;
     }
 
     function initialize() {
@@ -69,16 +98,13 @@ class RideWaitTimesWidgetApp extends Application.AppBase {
         //System.println(lastPos);
         if (lastPos != null && lastPos[0] != null && lastPos[1] != null && lastPos[2] != null) {
             // compare current time with last time, and take abs value
-            var now = Time.now().value();
-            var delta = now - lastPos[0];
-            if (delta < 0) {
-                delta = delta * -1;
-            }
+            var delta = calculateDelta(lastPos[0]);
             // if the time difference is less than threshold, use it
             //System.println(delta);
             if (delta < REUSE_POS_THRESHOLD_SEC) {
                 setLat(lastPos[1]);
                 setLon(lastPos[2]);
+                setPosTime(lastPos[0]);
                 // refresh stored position with time == now
                 //Application.Storage.setValue(REUSE_POS_STORAGE_KEY, [now, getLat(), getLon()]);
             }
@@ -93,15 +119,17 @@ class RideWaitTimesWidgetApp extends Application.AppBase {
     
     // position change callback
     function onPosition(info) {
-        
+        // set position info
         var degrees = info.position.toDegrees();
         setLat(degrees[0]);
         setLon(degrees[1]);
         setPosQuality(info.accuracy);
-        
+        // set time info
         var now = Time.now().value();
-        Application.Storage.setValue(REUSE_POS_STORAGE_KEY, [now, getLat(), getLon()]);
-        
+        setPosTime(now);
+        // write to storage
+        Application.Storage.setValue(REUSE_POS_STORAGE_KEY, [getPosTime(), getLat(), getLon()]);
+        // refresh
         WatchUi.requestUpdate();
     }
 
@@ -119,11 +147,11 @@ class RideWaitTimesWidgetApp extends Application.AppBase {
         return [ new RideWaitTimesWidgetView(), new RideWaitTimesParksDelegate() ] as Array<Views or InputDelegates>;
     }
     
-    function getFreeMem() {
+    function getFreeMemKb() {
         var freeMem = -1;
         var stats = System.getSystemStats();
         if (stats has :freeMemory) {
-            freeMem = stats.freeMemory;
+            freeMem = stats.freeMemory / 1000;
         }
         return freeMem;
     }
@@ -141,7 +169,8 @@ class RideWaitTimesWidgetApp extends Application.AppBase {
           "lon" => getLon().toString(),
           "min" => "p", // shorten JSON keys to single character
           //"lmt" => limit.toString(),
-          "mem" => getFreeMem()
+          "mem" => getFreeMemKb(),
+          "age" => calculatePosAge()
         };
         var options = {
           :method => Communications.HTTP_REQUEST_METHOD_GET,
@@ -164,7 +193,7 @@ class RideWaitTimesWidgetApp extends Application.AppBase {
           "id" => opts[0],
           "srt" => opts[1],
           "min" => "w", // shorten JSON keys to single character
-          "mem" => getFreeMem()
+          "mem" => getFreeMemKb()
         };
         var options = {
           :method => Communications.HTTP_REQUEST_METHOD_GET,
@@ -189,7 +218,8 @@ class RideWaitTimesWidgetApp extends Application.AppBase {
         } else if (errorCode == Communications.BLE_SERVER_TIMEOUT) {
             errorMsg = "Data too slow";
         } else if (errorCode == Communications.NETWORK_REQUEST_TIMED_OUT) {
-            errorMsg = "Network too slow";
+            errorHdg = "Network";
+            errorMsg = "Data too slow";
         } else {
             errorHdg = "Connection";
             errorMsg = "Error code: " + errorCode.toString();
