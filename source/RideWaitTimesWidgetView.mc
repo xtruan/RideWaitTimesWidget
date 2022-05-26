@@ -10,6 +10,8 @@ class RideWaitTimesWidgetView extends Ui.View {
 
     //hidden var posInfo = null;
     hidden var deviceSettings = null;
+    hidden var isMono = false;
+    hidden var isOcto = false;
     
     hidden var mStringTop = "";
     hidden var mStringBot = "";
@@ -50,30 +52,23 @@ class RideWaitTimesWidgetView extends Ui.View {
         //Pos.enableLocationEvents(Position.LOCATION_ONE_SHOT, method(:onPosition));
         App.getApp().requestPositionUpdate();
         deviceSettings = Sys.getDeviceSettings();
+        var deviceId = Ui.loadResource(Rez.Strings.DeviceId);
+        isOcto = deviceId != null && deviceId.equals("octo");
+        // only octo watches are mono... at least for now
+        isMono = isOcto;
     }
 
     //! Update the view
     function onUpdate(dc as Dc) {
-        // holder for misc data
-//        var string;
-
         // Set background color
         dc.setColor( Gfx.COLOR_TRANSPARENT, Gfx.COLOR_BLACK );
         dc.clear();
-        var pos = 0;
         
-//        // display battery life
-//        var battPercent = Sys.getSystemStats().battery;
-//        if (battPercent > 50.0) {
-//            dc.setColor( Gfx.COLOR_GREEN, Gfx.COLOR_TRANSPARENT );
-//        } else if (battPercent > 20.0) {
-//            dc.setColor( Gfx.COLOR_YELLOW, Gfx.COLOR_TRANSPARENT );
-//        } else {
-//            dc.setColor( Gfx.COLOR_RED, Gfx.COLOR_TRANSPARENT );
-//        }
-//        string = "Bat: " + battPercent.format("%.1f") + "%";
+        var pos = 0;
         pos = pos + Gfx.getFontHeight(Gfx.FONT_TINY) - 4;
-//        dc.drawText( (dc.getWidth() / 2), pos, Gfx.FONT_TINY, string, Gfx.TEXT_JUSTIFY_CENTER );
+        if (isOcto) {
+            pos = pos + 30;
+        }
         
         // Check if position is valid
         if (App.getApp().getLat() != 999 && App.getApp().getLon() != 999) {
@@ -104,24 +99,37 @@ class RideWaitTimesWidgetView extends Ui.View {
                 pos = pos + Gfx.getFontHeight(Gfx.FONT_MEDIUM) - 6;
             }
             
-            pos = pos + Gfx.getFontHeight(Gfx.FONT_MEDIUM) + 15;
             var image = Ui.loadResource(Rez.Drawables.Castle);
-            dc.drawBitmap( (dc.getWidth() / 2) - 30, pos, image );
+            if (isOcto) {
+                pos = pos - 75;
+                dc.drawBitmap( (dc.getWidth() / 2) - 50, pos, image );
+            } else {
+                pos = pos + Gfx.getFontHeight(Gfx.FONT_MEDIUM) + 15;
+                dc.drawBitmap( (dc.getWidth() / 2) - 30, pos, image );
+            }
             
             // show position quality as dot
             //pos = pos + 70;
             pos = 10;
             var posQuality = App.getApp().getPosQuality();
-            if (posQuality == Pos.QUALITY_GOOD) {
-                dc.setColor( Gfx.COLOR_GREEN, Gfx.COLOR_TRANSPARENT );
-            } else if (posQuality == Pos.QUALITY_USABLE) {
-                dc.setColor( Gfx.COLOR_YELLOW, Gfx.COLOR_TRANSPARENT );
-            } else if (posQuality == Pos.QUALITY_POOR) {
-                dc.setColor( Gfx.COLOR_RED, Gfx.COLOR_TRANSPARENT );
-            } else if (posQuality == Pos.QUALITY_LAST_KNOWN) {
-                dc.setColor( Gfx.COLOR_BLUE, Gfx.COLOR_TRANSPARENT );
+            if (isMono) {
+                if (posQuality == Pos.QUALITY_LAST_KNOWN) {
+                    dc.setColor( Gfx.COLOR_BLACK, Gfx.COLOR_TRANSPARENT );
+                } else {
+                    dc.setColor( Gfx.COLOR_WHITE, Gfx.COLOR_TRANSPARENT );
+                }
             } else {
-                dc.setColor( Gfx.COLOR_WHITE, Gfx.COLOR_TRANSPARENT );
+                if (posQuality == Pos.QUALITY_GOOD) {
+                    dc.setColor( Gfx.COLOR_GREEN, Gfx.COLOR_TRANSPARENT );
+                } else if (posQuality == Pos.QUALITY_USABLE) {
+                    dc.setColor( Gfx.COLOR_YELLOW, Gfx.COLOR_TRANSPARENT );
+                } else if (posQuality == Pos.QUALITY_POOR) {
+                    dc.setColor( Gfx.COLOR_RED, Gfx.COLOR_TRANSPARENT );
+                } else if (posQuality == Pos.QUALITY_LAST_KNOWN) {
+                    dc.setColor( Gfx.COLOR_BLUE, Gfx.COLOR_TRANSPARENT );
+                } else {
+                    dc.setColor( Gfx.COLOR_WHITE, Gfx.COLOR_TRANSPARENT );
+                }
             }
             dc.fillCircle( (dc.getWidth() / 2), pos, 5);
             
@@ -129,12 +137,17 @@ class RideWaitTimesWidgetView extends Ui.View {
           
               mStringTop = "Waiting for GPS" + progressDots;
               mStringBot = "Just a sec!  : )";
+              
+              var offset = 0;
+              if (isOcto) {
+                  offset = offset + 20;
+              }
             
               // display default text for no GPS
               dc.setColor( Gfx.COLOR_WHITE, Gfx.COLOR_TRANSPARENT );
-              dc.drawText( (dc.getWidth() / 2), (dc.getHeight() / 2) - Gfx.getFontHeight(Gfx.FONT_SMALL), Gfx.FONT_SMALL, mStringTop, Gfx.TEXT_JUSTIFY_CENTER );
+              dc.drawText( (dc.getWidth() / 2), (dc.getHeight() / 2) - Gfx.getFontHeight(Gfx.FONT_SMALL) + offset, Gfx.FONT_SMALL, mStringTop, Gfx.TEXT_JUSTIFY_CENTER );
               dc.setColor( msgColor, Gfx.COLOR_TRANSPARENT );
-              dc.drawText( (dc.getWidth() / 2), (dc.getHeight() / 2), Gfx.FONT_SMALL, mStringBot, Gfx.TEXT_JUSTIFY_CENTER );
+              dc.drawText( (dc.getWidth() / 2), (dc.getHeight() / 2) + offset, Gfx.FONT_SMALL, mStringBot, Gfx.TEXT_JUSTIFY_CENTER );
         
         }
         

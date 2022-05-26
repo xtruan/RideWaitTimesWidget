@@ -1,4 +1,4 @@
 <strings>
     <string id="AppName" scope="glance">Wait Times</string>
-    <string id="DeviceId">default</string>
+    <string id="DeviceId">octo</string>
 </strings>
