@@ -50,8 +50,8 @@ class RideWaitTimesWidgetView extends Ui.View {
     //! Restore the state of the app and prepare the view to be shown
     function onShow() {
         //Pos.enableLocationEvents(Position.LOCATION_ONE_SHOT, method(:onPosition));
-        App.getApp().requestPositionUpdate();
         deviceSettings = Sys.getDeviceSettings();
+        App.getApp().requestPositionUpdate(deviceSettings);
         var deviceId = Ui.loadResource(Rez.Strings.DeviceId);
         isOcto = deviceId != null && deviceId.equals("octo");
         // only octo watches are mono... at least for now

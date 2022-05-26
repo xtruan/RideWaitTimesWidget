@@ -110,11 +110,65 @@ class RideWaitTimesWidgetApp extends Application.AppBase {
             }
         }
         
-        requestPositionUpdate();
+        //var deviceSettings = Sys.getDeviceSettings();
+        //requestPositionUpdate(deviceSettings);
     }
     
-    function requestPositionUpdate() {
-        Position.enableLocationEvents(Position.LOCATION_ONE_SHOT, method(:onPosition));
+    function requestPositionUpdate(deviceSettings) {
+        var ver = deviceSettings.monkeyVersion;
+        // custom constellations only in CIQ >= 3.2.0
+        if ( ver != null && ver[0] != null && ver[1] != null && 
+            ( (ver[0] == 3 && ver[1] >= 2) || ver[0] > 3 ) ) {
+            if (enablePositioningWithConstellations([
+                    Position.CONSTELLATION_GPS,
+                    Position.CONSTELLATION_GLONASS, 
+                    Position.CONSTELLATION_GALILEO
+            ])) {
+                System.println("Constellations: GPS/GLO/GAL");
+                return true;
+            }
+            if (enablePositioningWithConstellations([
+                    Position.CONSTELLATION_GPS,
+                    Position.CONSTELLATION_GLONASS
+            ])) {
+                System.println("Constellations: GPS/GLO");
+                return true;
+            }
+            if (enablePositioningWithConstellations([
+                    Position.CONSTELLATION_GPS,
+                    Position.CONSTELLATION_GALILEO
+            ])) {
+                System.println("Constellations: GPS/GAL");
+                return true;
+            }
+            if (enablePositioningWithConstellations([
+                    Position.CONSTELLATION_GPS
+            ])) {
+                System.println("Constellation: GPS");
+                return true;
+            }
+        } else {
+            Position.enableLocationEvents(Position.LOCATION_ONE_SHOT, method(:onPosition));
+            System.println("Constellation: GPS (Legacy Mode)");
+        }
+        return true;
+    }
+    
+    function enablePositioningWithConstellations(constellations) {
+        var success = false;
+        try {
+            Position.enableLocationEvents({
+                    :acquisitionType => Position.LOCATION_ONE_SHOT,
+                    :constellations => constellations
+                },
+                method(:onPosition)
+            );
+            success = true;
+        } catch (ex) {
+            System.println(ex.getErrorMessage() + ": " + constellations.toString());
+            success = false;
+        }
+        return success;
     }
     
     // position change callback
