@@ -1,7 +1,7 @@
 using Toybox.System;
 using Toybox.Application;
-using Toybox.Lang;
-using Toybox.WatchUi;
+using Toybox.Lang as Lang;
+using Toybox.WatchUi as Ui;
 using Toybox.Position;
 using Toybox.Time;
 
@@ -92,7 +92,7 @@ class RideWaitTimesWidgetApp extends Application.AppBase {
     }
 
     // onStart() is called on application start up
-    function onStart(state as Dictionary?) as Void {
+    function onStart(state as Lang.Dictionary?) as Void {
         // check for stored position
         var lastPos = Application.Storage.getValue(REUSE_POS_STORAGE_KEY);
         //System.println(lastPos);
@@ -188,7 +188,7 @@ class RideWaitTimesWidgetApp extends Application.AppBase {
     }
 
     // onStop() is called when your application is exiting
-    function onStop(state as Dictionary?) as Void {
+    function onStop(state as Lang.Dictionary?) as Void {
         Position.enableLocationEvents(Position.LOCATION_DISABLE, method(:onPosition));
     }
     
@@ -197,8 +197,8 @@ class RideWaitTimesWidgetApp extends Application.AppBase {
     }
 
     // Return the initial view of your application here
-    function getInitialView() as Array<Views or InputDelegates>? {
-        return [ new RideWaitTimesWidgetView(), new RideWaitTimesParksDelegate() ] as Array<Views or InputDelegates>;
+    function getInitialView() as Lang.Array<Ui.View or Ui.InputDelegate>? {
+        return [ new RideWaitTimesWidgetView(), new RideWaitTimesParksDelegate() ] as Lang.Array<Ui.View or Ui.InputDelegate>;
     }
     
     function getFreeMemKb() {
@@ -296,7 +296,7 @@ function getApp() as RideWaitTimesWidgetApp {
     return Application.getApp() as RideWaitTimesWidgetApp;
 }
 
-class DummyMenu2Delegate extends WatchUi.Menu2InputDelegate {
+class DummyMenu2Delegate extends Ui.Menu2InputDelegate {
     function initialize() {
         Menu2InputDelegate.initialize();
     }

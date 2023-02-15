@@ -24,7 +24,7 @@ class RideWaitTimesWidgetView extends Ui.View {
     }
 
     //! Load your resources here
-    function onLayout(dc as Dc) {
+    function onLayout(dc as Gfx.Dc) {
         progressTimer = new Timer.Timer();
         progressTimer.start(method(:updateProgress), 1000, true);
     }
@@ -59,7 +59,7 @@ class RideWaitTimesWidgetView extends Ui.View {
     }
 
     //! Update the view
-    function onUpdate(dc as Dc) {
+    function onUpdate(dc as Gfx.Dc) {
         // Set background color
         dc.setColor( Gfx.COLOR_TRANSPARENT, Gfx.COLOR_BLACK );
         dc.clear();
