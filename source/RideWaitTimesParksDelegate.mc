@@ -1,4 +1,5 @@
 using Toybox.Application as App;
+using Toybox.System as Sys;
 using Toybox.WatchUi as Ui;
 
 class RideWaitTimesParksDelegate extends Ui.BehaviorDelegate {
@@ -14,7 +15,12 @@ class RideWaitTimesParksDelegate extends Ui.BehaviorDelegate {
     function onKey(key) {
         if (key.getKey() == Ui.KEY_ENTER) {
             onSelect();
+            return true;
+        } else if (key.getKey() == Ui.KEY_ESC) {
+        	Sys.println("Quitting!");
+        	return false;
         }
+        return false;
     }
     
     function onSelect() {
