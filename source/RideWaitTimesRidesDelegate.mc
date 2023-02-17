@@ -52,8 +52,11 @@ class RideWaitTimesRidesDelegate extends Ui.Menu2InputDelegate {
            } else if (waitTime.equals("-2")) {
                // -2 == Show custom message
                waitTime = data[i].get("m").toString();
+           } else if (waitTime.equals("1")) {
+               // 1 == Show as wait time (min)
+               waitTime = "1 min";
            } else {
-               // Anything else == Show as wait time
+               // Anything else == Show as wait time (mins)
                waitTime = waitTime + " mins";
            }
               
