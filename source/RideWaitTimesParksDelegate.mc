@@ -10,12 +10,12 @@ class RideWaitTimesParksDelegate extends Ui.BehaviorDelegate {
 
     function onMenu() {
         onListRegions();
+        return true;
     }
     
     function onKey(key) {
         if (key.getKey() == Ui.KEY_ENTER) {
-            onSelect();
-            return true;
+            return onSelect();
         } else if (key.getKey() == Ui.KEY_ESC) {
         	Sys.println("Quitting!");
         	return false;
@@ -42,6 +42,7 @@ class RideWaitTimesParksDelegate extends Ui.BehaviorDelegate {
         } else {
             onListRegions();
         }
+        return true;
     }
     
    // Set up the response callback function
