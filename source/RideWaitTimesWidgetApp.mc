@@ -116,6 +116,49 @@ class RideWaitTimesWidgetApp extends Application.AppBase {
     
     function requestPositionUpdate(deviceSettings) {
         var ver = deviceSettings.monkeyVersion;
+        
+            // custom configurations only in CIQ >= 3.3.6 (using 3.4.0 for our purposes)
+        if ( ver != null && ver[0] != null && ver[1] != null && 
+            ( (ver[0] == 3 && ver[1] >= 4) || ver[0] > 3 ) ) {
+            if (Position has :CONFIGURATION_GPS_GLONASS_GALILEO_BEIDOU_L1_L5 && 
+		        Position.hasConfigurationSupport(Position.CONFIGURATION_GPS_GLONASS_GALILEO_BEIDOU_L1_L5)) {
+                if (enablePositioningWithConfiguration(Position.CONFIGURATION_GPS_GLONASS_GALILEO_BEIDOU_L1_L5)) {
+                    System.println("Configuration: GPS/GLO/GAL/BEI/L1/L5");
+                    return true;
+                }
+            } else if (Position has :CONFIGURATION_GPS_GLONASS_GALILEO_BEIDOU_L1 &&
+		               Position.hasConfigurationSupport(Position.CONFIGURATION_GPS_GLONASS_GALILEO_BEIDOU_L1)) {
+                if (enablePositioningWithConfiguration(Position.CONFIGURATION_GPS_GLONASS_GALILEO_BEIDOU_L1)) {
+		            System.println("Configuration: GPS/GLO/GAL/BEI/L1");
+                    return true;
+                }
+            } else if (Position has :CONFIGURATION_GPS_GLONASS &&
+		               Position.hasConfigurationSupport(Position.CONFIGURATION_GPS_GLONASS)) {
+                if (enablePositioningWithConfiguration(Position.CONFIGURATION_GPS_GLONASS)) {
+		            System.println("Configuration: GPS/GLO");
+                    return true;
+                }
+            } else if (Position has :CONFIGURATION_GPS_GALILEO &&
+		               Position.hasConfigurationSupport(Position.CONFIGURATION_GPS_GALILEO)) {
+                if (enablePositioningWithConfiguration(Position.CONFIGURATION_GPS_GALILEO)) {
+		            System.println("Configuration: GPS/GAL");
+                    return true;
+                }
+            } else if (Position has :CONFIGURATION_GPS_BEIDOU &&
+		               Position.hasConfigurationSupport(Position.CONFIGURATION_GPS_BEIDOU)) {
+                if (enablePositioningWithConfiguration(Position.CONFIGURATION_GPS_BEIDOU)) {
+		            System.println("Configuration: GPS/BEI");
+                    return true;
+                }
+            } else if (Position has :CONFIGURATION_GPS &&
+		               Position.hasConfigurationSupport(Position.CONFIGURATION_GPS)) {
+                if (enablePositioningWithConfiguration(Position.CONFIGURATION_GPS)) {
+		            System.println("Configuration: GPS");
+                    return true;
+                }
+            }
+        } 
+        
         // custom constellations only in CIQ >= 3.2.0
         if ( ver != null && ver[0] != null && ver[1] != null && 
             ( (ver[0] == 3 && ver[1] >= 2) || ver[0] > 3 ) ) {
@@ -149,7 +192,7 @@ class RideWaitTimesWidgetApp extends Application.AppBase {
             }
         } else {
             Position.enableLocationEvents(Position.LOCATION_ONE_SHOT, method(:onPosition));
-            System.println("Constellation: GPS (Legacy Mode)");
+            System.println("GPS (Legacy Mode)");
         }
         return true;
     }
@@ -166,6 +209,23 @@ class RideWaitTimesWidgetApp extends Application.AppBase {
             success = true;
         } catch (ex) {
             System.println(ex.getErrorMessage() + ": " + constellations.toString());
+            success = false;
+        }
+        return success;
+    }
+    
+    function enablePositioningWithConfiguration(configuration) {
+        var success = false;
+        try {
+            Position.enableLocationEvents({
+                    :acquisitionType => Position.LOCATION_ONE_SHOT,
+                    :configuration => configuration
+                },
+                method(:onPosition)
+            );
+            success = true;
+        } catch (ex) {
+            System.println(ex.getErrorMessage() + ": " + configuration.toString());
             success = false;
         }
         return success;
